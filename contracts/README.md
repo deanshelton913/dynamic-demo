@@ -18,7 +18,7 @@ Simple ERC721 NFT contract for the Dynamic demo app.
 2. Set up environment variables in `.env.local`:
    ```bash
    DEPLOY_CONTRACT_PRIVATE_KEY=your_private_key_here
-   POLYGONSCAN_API_KEY=your_polygonscan_api_key_here
+   DEPLOY_POLYGONSCAN_API_KEY=your_polygonscan_api_key_here
    DEPLOY_POLYGON_RPC_URL=https://polygon-mainnet.g.alchemy.com/v2/your_key
    ```
 

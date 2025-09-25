@@ -3,6 +3,7 @@
 import { DynamicWidget, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import ClientOnly from "./client-only";
 
 export default function Header() {
   const isLoggedIn = useIsLoggedIn();
@@ -32,7 +33,9 @@ export default function Header() {
             )}
           </div>
           <div className="flex items-center">
-            <DynamicWidget />
+            <ClientOnly fallback={<div className="w-8 h-8 bg-gray-200 rounded animate-pulse" />}>
+              <DynamicWidget />
+            </ClientOnly>
           </div>
         </div>
       </div>

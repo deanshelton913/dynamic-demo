@@ -170,7 +170,7 @@ export default function NFTMintGasless() {
             : "bg-green-600 text-white hover:bg-green-700"
         }`}
       >
-        {isLoading ? `Minting... (${isLoading})` : "Mint NFT"}
+        {isLoading ? `Minting...` : "Mint NFT"}
       </button>
 
       {/* Error Display */}

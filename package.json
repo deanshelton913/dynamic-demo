@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "contracts:build": "cd contracts && forge build",
-    "contracts:deploy:polygon": "cd contracts && source ../.env.local && forge create src/DynamicNFT.sol:DynamicNFT --private-key $DEPLOY_CONTRACT_PRIVATE_KEY --rpc-url $DEPLOY_POLYGON_RPC_URL --broadcast --verify --etherscan-api-key $POLYGONSCAN_API_KEY"
+    "contracts:deploy:polygon": "cd contracts && source ../.env.local && forge create src/DynamicNFT.sol:DynamicNFT --private-key $DEPLOY_CONTRACT_PRIVATE_KEY --rpc-url $DEPLOY_POLYGON_RPC_URL --broadcast --verify --etherscan-api-key $DEPLOY_POLYGONSCAN_API_KEY"
   },
   "dependencies": {
     "@dynamic-labs/ethereum": "^4.32.0",
