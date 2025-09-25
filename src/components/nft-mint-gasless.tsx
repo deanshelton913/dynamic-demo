@@ -60,20 +60,23 @@ export default function NFTMintGasless() {
 
       setTxHash(hash);
 
-      // Wait for transaction confirmation using public client with timeout
-      try {
-        await publicClient.waitForTransactionReceipt({ 
-          hash,
-          timeout: 60000 // 60 second timeout
-        });
-      } catch (receiptError) {
-        console.warn("Transaction receipt timeout or error:", receiptError);
-        // Transaction was sent successfully, just couldn't wait for receipt
-        // This is still a success case
-      }
-      
-      // Ensure loading state is reset after successful transaction
+      // Reset loading state immediately after transaction is sent
       setIsLoading(false);
+      
+      // Optionally wait for transaction confirmation (non-blocking)
+      // This is just for better UX, but not required for success
+      setTimeout(async () => {
+        try {
+          await publicClient.waitForTransactionReceipt({ 
+            hash,
+            timeout: 30000 // 30 second timeout
+          });
+          console.log("Transaction confirmed:", hash);
+        } catch (receiptError) {
+          console.warn("Transaction receipt timeout or error:", receiptError);
+          // This is fine - transaction was still successful
+        }
+      }, 1000); // Wait 1 second before checking receipt
       
       return hash;
     } catch (e: unknown) {
@@ -92,10 +95,13 @@ export default function NFTMintGasless() {
       setError(null);
       setTxHash(null);
       
+      console.log("Starting mint, isLoading:", isLoading);
       await mintNFTGasless();
+      console.log("Mint completed, isLoading should be false");
     } catch (error) {
       // Error is already handled in mintNFTGasless
       // Ensure loading state is reset even on error
+      console.log("Mint error, setting isLoading to false");
       setIsLoading(false);
     }
   };
@@ -164,7 +170,7 @@ export default function NFTMintGasless() {
             : "bg-green-600 text-white hover:bg-green-700"
         }`}
       >
-        {isLoading ? "Minting..." : "Mint NFT"}
+        {isLoading ? `Minting... (${isLoading})` : "Mint NFT"}
       </button>
 
       {/* Error Display */}
