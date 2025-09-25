@@ -19,7 +19,7 @@ Simple ERC721 NFT contract for the Dynamic demo app.
    ```bash
    DEPLOY_CONTRACT_PRIVATE_KEY=your_private_key_here
    POLYGONSCAN_API_KEY=your_polygonscan_api_key_here
-   NEXT_PUBLIC_POLYGON_RPC_URL=https://polygon-mainnet.g.alchemy.com/v2/your_key
+   DEPLOY_POLYGON_RPC_URL=https://polygon-mainnet.g.alchemy.com/v2/your_key
    ```
 
 ### Deploy to Polygon
