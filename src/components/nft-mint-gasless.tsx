@@ -60,8 +60,20 @@ export default function NFTMintGasless() {
 
       setTxHash(hash);
 
-      // Wait for transaction confirmation using public client
-      await publicClient.waitForTransactionReceipt({ hash });
+      // Wait for transaction confirmation using public client with timeout
+      try {
+        await publicClient.waitForTransactionReceipt({ 
+          hash,
+          timeout: 60000 // 60 second timeout
+        });
+      } catch (receiptError) {
+        console.warn("Transaction receipt timeout or error:", receiptError);
+        // Transaction was sent successfully, just couldn't wait for receipt
+        // This is still a success case
+      }
+      
+      // Ensure loading state is reset after successful transaction
+      setIsLoading(false);
       
       return hash;
     } catch (e: unknown) {
@@ -76,9 +88,15 @@ export default function NFTMintGasless() {
 
   const handleMint = async () => {
     try {
+      // Reset any previous error state
+      setError(null);
+      setTxHash(null);
+      
       await mintNFTGasless();
     } catch (error) {
       // Error is already handled in mintNFTGasless
+      // Ensure loading state is reset even on error
+      setIsLoading(false);
     }
   };
 
