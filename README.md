@@ -4,6 +4,12 @@ A simple Next.js application demonstrating gasless NFT minting using Dynamic and
 
 🚀 **Live Demo**: [https://darkbastion.com](https://darkbastion.com) - Try the gasless NFT minting experience!
 
+## Demo Video
+
+Watch the complete setup and demo walkthrough:
+
+[![Loom Demo](./assets/loom-thumbnail.png)](https://www.loom.com/share/94d10d7cbd464206a9ba54c05d8b539e?sid=6d1196f9-422d-47a9-97d2-6fb19bc4d386)   
+
 ## Getting Started
 
 ### Step 0: Create Accounts
