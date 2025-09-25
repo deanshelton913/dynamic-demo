@@ -37,12 +37,17 @@ export default function NFTMintGasless() {
       setIsLoading(true);
       setError(null);
 
-      // Cast to any to access getWalletClient method (Dynamic SDK typing issue)
+      // Cast to any to access wallet methods (Dynamic SDK typing issue)
       const ethereumWallet = primaryWallet as any;
       const walletClient = await ethereumWallet.getWalletClient();
+      const publicClient = await ethereumWallet.getPublicClient();
       
       if (!walletClient) {
         throw new Error("Wallet client not available. Please ensure your wallet is properly connected.");
+      }
+      
+      if (!publicClient) {
+        throw new Error("Public client not available. Please ensure your wallet is properly connected.");
       }
 
       // Use writeContract for transaction
@@ -55,8 +60,8 @@ export default function NFTMintGasless() {
 
       setTxHash(hash);
 
-      // Wait for transaction confirmation
-      await walletClient.waitForTransactionReceipt({ hash });
+      // Wait for transaction confirmation using public client
+      await publicClient.waitForTransactionReceipt({ hash });
       
       return hash;
     } catch (e: unknown) {
