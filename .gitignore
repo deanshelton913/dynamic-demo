@@ -35,3 +35,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# foundry
+contracts/lib/
+contracts/out/
+contracts/cache/
+contracts/foundry.lock
