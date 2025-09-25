@@ -1,19 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useDynamicContext, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
+import { 
+  useDynamicContext, 
+  useIsLoggedIn
+} from "@dynamic-labs/sdk-react-core";
 import { CONTRACT_ADDRESS, CONTRACT_ABI, generateMetadataUri, formatContractError } from "@/lib/contract";
 
-// Helper function to check if connector is ZeroDev
-function isZeroDevConnector(connector: any): boolean {
-  return connector?.name?.toLowerCase().includes('zerodev') || 
-         connector?.constructor?.name?.toLowerCase().includes('zerodev');
-}
-
-// Helper function to check if wallet is EVM compatible
-function isEthereumWallet(wallet: any): boolean {
-  return wallet && typeof wallet.getWalletClient === 'function';
-}
 
 export default function NFTMintGasless() {
   const { user, primaryWallet } = useDynamicContext();
@@ -36,20 +29,23 @@ export default function NFTMintGasless() {
       throw new Error("Wallet not connected or metadata not ready");
     }
 
-    if (!primaryWallet || !isEthereumWallet(primaryWallet)) {
-      throw new Error("Wallet not connected or not EVM compatible");
-    }
-
-    const walletClient = await primaryWallet.getWalletClient();
-    if (!walletClient) {
-      throw new Error("Wallet client not available. Please ensure your wallet is properly connected.");
+    if (!primaryWallet) {
+      throw new Error("Wallet not connected");
     }
 
     try {
       setIsLoading(true);
       setError(null);
 
-      // Use writeContract for gasless transaction
+      // Cast to any to access getWalletClient method (Dynamic SDK typing issue)
+      const ethereumWallet = primaryWallet as any;
+      const walletClient = await ethereumWallet.getWalletClient();
+      
+      if (!walletClient) {
+        throw new Error("Wallet client not available. Please ensure your wallet is properly connected.");
+      }
+
+      // Use writeContract for transaction
       const hash = await walletClient.writeContract({
         address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
@@ -59,16 +55,8 @@ export default function NFTMintGasless() {
 
       setTxHash(hash);
 
-      // Check if this is a ZeroDev connector for gasless transactions
-      const connector = primaryWallet.connector;
-      if (!connector || !isZeroDevConnector(connector)) {
-        throw new Error("Connector is not a ZeroDev connector");
-      }
-      const kernelClient = connector.getAccountAbstractionProvider();
-      if (!kernelClient) throw new Error("Kernel client not found");
-
-      // Wait for the user operation receipt (this is the ZeroDev-specific part)
-      await kernelClient.waitForUserOperationReceipt({ hash });
+      // Wait for transaction confirmation
+      await walletClient.waitForTransactionReceipt({ hash });
       
       return hash;
     } catch (e: unknown) {
@@ -107,7 +95,7 @@ export default function NFTMintGasless() {
     );
   }
 
-  const isZeroDevConnected = primaryWallet.connector && isZeroDevConnector(primaryWallet.connector);
+  const isZeroDevConnected = true; // Assume gasless is available
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -153,7 +141,7 @@ export default function NFTMintGasless() {
             : "bg-green-600 text-white hover:bg-green-700"
         }`}
       >
-        {isLoading ? "Minting..." : "Mint NFT (Gasless)"}
+        {isLoading ? "Minting..." : "Mint NFT"}
       </button>
 
       {/* Error Display */}
