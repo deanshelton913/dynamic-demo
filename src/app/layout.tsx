@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import DynamicProvider from "@/components/dynamic-provider";
+import Header from "@/components/header";
 
 export const metadata: Metadata = {
   title: "Dynamic NFT Minting Demo",
@@ -14,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        {children}
+        <DynamicProvider>
+          <Header />
+          {children}
+        </DynamicProvider>
       </body>
     </html>
   );
