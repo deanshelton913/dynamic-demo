@@ -2,30 +2,24 @@
 
 A simple Next.js application demonstrating gasless NFT minting using Dynamic and ZeroDev.
 
+🚀 **Live Demo**: [https://darkbastion.com](https://darkbastion.com) - Try the gasless NFT minting experience!
+
 ## Getting Started
 
-### 1. Install Dependencies
-
-```bash
-npm install
-```
-
-### 2. Dynamic & ZeroDev Account Setup
-
-Before configuring the environment, you'll need to set up your Dynamic and ZeroDev accounts with the proper settings for gasless transactions on Polygon.
-
-#### Step 0: Create Accounts
+### Step 0: Create Accounts
 
 1. Create a Dynamic account at [https://app.dynamic.xyz/](https://app.dynamic.xyz/)
 2. Create a ZeroDev account at [https://dashboard-v1.zerodev.app/](https://dashboard-v1.zerodev.app/)
 3. **Note**: To use Polygon mainnet, you'll need to establish a billing account (you'll be on the free tier)
 
-#### Step 1: Configure Authentication
+### Step 1: Configure Authentication
 
 1. Go to [Dynamic Login User Profile](https://app.dynamic.xyz/dashboard/log-in-user-profile)
 2. Enable email authentication for your Dynamic app
 
-#### Step 2: Setup Chains and Networks
+![Enable Email Authentication](./assets/enable-email-auth.png)
+
+### Step 2: Setup Chains and Networks
 
 1. Navigate to [Dynamic Chains and Networks](https://app.dynamic.xyz/dashboard/chains-and-networks)
 2. Disable Ethereum mainnet
@@ -34,20 +28,7 @@ Before configuring the environment, you'll need to set up your Dynamic and ZeroD
 
 ![Setup Chains and Networks](./assets/setup-chains-and-networks.png)
 
-#### Step 3: Configure Smart Wallets
-
-1. Go to [Dynamic Smart Wallets](https://app.dynamic.xyz/dashboard/smart-wallets)
-2. Set up smart wallets to link your ZeroDev account:
-   - Check "Create AA for branded wallets" for "All users"
-   - Select the ZeroDev option
-
-![Configure Smart Wallets - Step 1](./assets/configure-smart-wallets-1.png)
-
-![Configure Smart Wallets - Step 2](./assets/configure-smart-wallets-2.png)
-
-![Configure Smart Wallets - Step 3](./assets/configure-smart-wallets-3.png)
-
-#### Step 4: Setup ZeroDev Project and Paymaster
+### Step 3: Setup ZeroDev Project and Paymaster
 
 1. **Create ZeroDev Project**:
    - Go to [ZeroDev Dashboard](https://dashboard-v1.zerodev.app/)
@@ -69,6 +50,19 @@ Before configuring the environment, you'll need to set up your Dynamic and ZeroD
 
 ![Setup Gas Policy](./assets/setup-gas-policy.png)
 
+### Step 4: Configure Smart Wallets
+
+1. Go to [Dynamic Smart Wallets](https://app.dynamic.xyz/dashboard/smart-wallets)
+2. Set up smart wallets to link your ZeroDev account:
+   - Check "Create AA for branded wallets" for "All users"
+   - Select the ZeroDev option
+
+![Configure Smart Wallets - Step 1](./assets/configure-smart-wallets-1.png)
+
+![Configure Smart Wallets - Step 2](./assets/configure-smart-wallets-2.png)
+
+![Configure Smart Wallets - Step 3](./assets/configure-smart-wallets-3.png)
+
 4. **Link ZeroDev to Dynamic**:
    - Copy your ZeroDev project ID from [ZeroDev Dashboard](https://dashboard-v1.zerodev.app/)
 
@@ -78,14 +72,14 @@ Before configuring the environment, you'll need to set up your Dynamic and ZeroD
 
 ![Paste ZeroDev Project ID to Dynamic](./assets/paste-it-to-zerodev-config-in-dynamic.png)
 
-#### Step 5: Enable Security Features
+### Step 5: Enable Security Features
 
 1. Go to [Dynamic Security Settings](https://app.dynamic.xyz/dashboard/security)
 2. Enable passkeys and authenticator apps
 
 ![Enable Passkeys](./assets/enable-passkeys.png)
 
-### 3. Environment Setup
+### Step 6: Environment Setup
 
 Copy the environment template and configure your settings:
 
@@ -100,7 +94,15 @@ Edit `.env.local` and update the following values:
 
 ![Dynamic Environment ID](./assets/dynamic-env-id.png)
 
-### 4. Run the Development Server
+### Step 7: Install Dependencies and Run the Development Server
+
+Install the required dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
