@@ -5,6 +5,8 @@ import {
   useDynamicContext, 
   useIsLoggedIn
 } from "@dynamic-labs/sdk-react-core";
+import { isEthereumWallet } from "@dynamic-labs/ethereum";
+import { isZeroDevConnector } from "@dynamic-labs/ethereum-aa";
 import { CONTRACT_ADDRESS, CONTRACT_ABI, generateMetadataUri, formatContractError } from "@/lib/contract";
 
 
@@ -37,48 +39,40 @@ export default function NFTMintGasless() {
       setIsLoading(true);
       setError(null);
 
-      // Cast to any to access wallet methods (Dynamic SDK typing issue)
-      const ethereumWallet = primaryWallet as any;
-      const walletClient = await ethereumWallet.getWalletClient();
-      const publicClient = await ethereumWallet.getPublicClient();
+      if (!isEthereumWallet(primaryWallet)) {
+        throw new Error("Wallet not connected or not EVM compatible");
+      }
+
+      const walletClient = await primaryWallet.getWalletClient();
       
       if (!walletClient) {
         throw new Error("Wallet client not available. Please ensure your wallet is properly connected.");
       }
-      
-      if (!publicClient) {
-        throw new Error("Public client not available. Please ensure your wallet is properly connected.");
-      }
 
       // Use writeContract for transaction
-      const hash = await walletClient.writeContract({
+      const userOpHash = await walletClient.writeContract({
         address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
         functionName: "mintTo",
         args: [primaryWallet.address as `0x${string}`, metadataUri],
       });
 
-      setTxHash(hash);
-
-      // Reset loading state immediately after transaction is sent
-      setIsLoading(false);
-      
-      // Optionally wait for transaction confirmation (non-blocking)
-      // This is just for better UX, but not required for success
-      setTimeout(async () => {
-        try {
-          await publicClient.waitForTransactionReceipt({ 
-            hash,
-            timeout: 30000 // 30 second timeout
-          });
-          console.log("Transaction confirmed:", hash);
-        } catch (receiptError) {
-          console.warn("Transaction receipt timeout or error:", receiptError);
-          // This is fine - transaction was still successful
+      // For ZeroDev connectors, wait for user operation receipt to get actual transaction hash
+      const connector = primaryWallet.connector;
+      if (connector && isZeroDevConnector(connector)) {
+        const kernelClient = connector.getAccountAbstractionProvider();
+        if (kernelClient) {
+          const receipt = await kernelClient.waitForUserOperationReceipt({ hash: userOpHash });
+          const actualTxHash = receipt.receipt.transactionHash;
+          setTxHash(actualTxHash);
+          return actualTxHash;
         }
-      }, 1000); // Wait 1 second before checking receipt
+      }
+
+      // For non-ZeroDev wallets, use the user operation hash
+      setTxHash(userOpHash);
+      return userOpHash;
       
-      return hash;
     } catch (e: unknown) {
       console.error("Gasless minting failed:", e);
       const errorMessage = formatContractError(e);
@@ -124,7 +118,7 @@ export default function NFTMintGasless() {
     );
   }
 
-  const isZeroDevConnected = true; // Assume gasless is available
+  const isZeroDevConnected = primaryWallet?.connector && isZeroDevConnector(primaryWallet.connector);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -189,7 +183,7 @@ export default function NFTMintGasless() {
           <h3 className="font-semibold mb-2 text-green-700">✅ Minting Successful!</h3>
           <div className="text-sm text-green-600 space-y-1">
             <p><strong>Transaction Hash:</strong> {txHash}</p>
-            <p><strong>Gasless:</strong> Yes (ZeroDev)</p>
+            <p><strong>Gasless:</strong> {isZeroDevConnected ? "Yes (ZeroDev)" : "No (Standard Wallet)"}</p>
             <p><strong>View on Polygonscan:</strong> 
               <a 
                 href={`https://polygonscan.com/tx/${txHash}`}
